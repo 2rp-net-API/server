@@ -1,33 +1,128 @@
+import AppDataSource from "../data-source";
 import { Request, Response } from "express";
-import { BadRequestError, UnauthorizedError } from "../helpers/api-errors";
-import { horaextraRepository } from "../repositories/horaextraRepository";
-import * as jwt from "jsonwebtoken";
-import * as dotenv from "dotenv";
-dotenv.config();
+import { HoraExtra } from "../entities";
+import { Colaborador } from "../entities";
 
-export class HoraExtraController {
-  async create(req: Request, res: Response) {
-    const { entrada, saida, isApproved, description } = req.body;
+class HoraExtraController {
+  public async create(req: Request, res: Response): Promise<Response> {
+    let { entrada, saida, description, idcolaborador } = req.body;
 
-    const token: any = req.header("Authorization")?.split(" ")[1];
-    const secret: any = process.env.SECRET_REFRESH_TOKEN;
-    
-    interface JwtPayload {
-        id: string
+    if (!entrada || entrada.trim() === "" || !saida || saida.trim() === "") {
+      return res.json({ error: "Forneça a entrada e a saída do colaborador" });
     }
-    const decoded = jwt.verify(token, secret) as JwtPayload;
-    const id = decoded.id
 
-    const newHoraExtra = horaextraRepository.create({
-      entrada,
-      saida,
-      isApproved: false,
-      description,
-      funcionario: id
+    const isColaborador = await AppDataSource.manager.findOneBy(Colaborador, {
+      idcolaborador,
     });
 
-    await horaextraRepository.save(newHoraExtra)
+    if (!isColaborador || isColaborador.status === "inativo") {
+      return res.json({ error: "Colaborador não localizado ou inativo" });
+    }
 
-    return res.status(201).json(newHoraExtra)
+    const object = new HoraExtra();
+    object.entrada = entrada;
+    object.saida = saida;
+    object.description = description;
+    object.colaborador = idcolaborador;
+    object.isApproved = false;
+
+    const horaextra: any = await AppDataSource.manager
+      .save(HoraExtra, object)
+      .catch((e) => {
+        return e.message;
+      });
+    return res.json(horaextra);
+  }
+
+  public async delete(req: Request, res: Response): Promise<Response> {
+    const { idhoraextra } = req.body;
+    if (!idhoraextra || idhoraextra.trim() === "") {
+      return res.json({ error: "Forneça o identificador da hora extra" });
+    }
+    const object: any = await AppDataSource.manager.findOneBy(HoraExtra, {
+      idhoraextra,
+    });
+    if (object && object.idhoraextra) {
+      const r = await AppDataSource.manager
+        .remove(HoraExtra, object)
+        .catch((e) => e.message);
+      return res.json(r);
+    } else {
+      return res.json({ error: "Hora Extra não localizada" });
+    }
+  }
+
+  public async update(req: Request, res: Response): Promise<Response> {
+    const {
+      idhoraextra,
+      entrada,
+      saida,
+      description,
+      colaborador,
+      isApproved,
+    } = req.body;
+    if (!idhoraextra || idhoraextra.trim() === "") {
+      return res.json({ error: "Forneça o identificador da hora extra" });
+    }
+    const object: any = await AppDataSource.manager.findOneBy(HoraExtra, {
+      idhoraextra,
+    });
+    if (object && object.idhoraextra) {
+      object.entrada =
+        !entrada || entrada.trim() === "" ? object.entrada : entrada.trim();
+      object.saida =
+        !saida || saida.trim() === "" ? object.saida : saida.trim();
+      object.description =
+        !description || description.trim() === ""
+          ? object.description
+          : description.trim();
+      object.colaborador =
+        !colaborador || colaborador.trim() === ""
+          ? object.colaborador
+          : colaborador.trim();
+      object.isApproved =
+        !isApproved || isApproved.trim() === ""
+          ? object.isApproved
+          : isApproved.trim();
+      const horaextra = await AppDataSource.manager
+        .save(HoraExtra, object)
+        .catch((e) => {
+          return e.message;
+        });
+      return res.json(horaextra);
+    } else {
+      return res.json({ error: "Hora Extra não localizada" });
+    }
+  }
+
+  public async list(req: Request, res: Response): Promise<Response> {
+    const object: any = await AppDataSource.getRepository(HoraExtra).find({});
+    return res.json(object);
+  }
+
+  public async approve(req: Request, res: Response): Promise<Response> {
+    const { idhoraextra } = req.body;
+
+    if (!idhoraextra || idhoraextra.trim() === "") {
+      return res.json({ error: "Forneça o identificador da hora extra" });
+    }
+    const object: any = await AppDataSource.manager.findOneBy(HoraExtra, {
+      idhoraextra,
+    });
+
+    if (!object.isApproved) {
+      object.isApproved = true;
+    } else {
+      object.isApproved = false;
+    }
+
+    const horaextra = await AppDataSource.manager
+      .save(HoraExtra, object)
+      .catch((e) => {
+        return e.message;
+      });
+    return res.json(horaextra);
   }
 }
+
+export default new HoraExtraController();

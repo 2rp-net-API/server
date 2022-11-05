@@ -1,16 +1,25 @@
-import "dotenv/config";
-import "reflect-metadata";
 import { DataSource } from "typeorm";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const port = process.env.TYPEORM_PORT as unknown as number | undefined;
-
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: process.env.TYPEORM_HOST,
-  port: port,
-  username: process.env.TYPEORM_USERNAME,
-  password: process.env.TYPEORM_PASSWORD,
-  database: process.env.TYPEORM_DATABASE,
-  entities: [`${__dirname}/**/entities/*.{ts,js}`],
-  migrations: [`${__dirname}/**/migrations/*.{ts,js}`],
+const AppDataSource = new DataSource({
+    url: process.env.BD_URL,
+    type: "postgres",
+    synchronize: false, 
+    logging: false, 
+    entities: ["src/entities/*.ts"], 
+    migrations: ["src/migrations/*.ts"], 
+    subscribers: [],
+    maxQueryExecutionTime: 2000 
 });
+
+AppDataSource
+    .initialize()
+    .then(() => {
+        console.log("Data Source inicializado!")
+    })
+    .catch((e) => {
+        console.error("Erro na inicialização do Data Source:", e)
+    });
+
+export default AppDataSource;

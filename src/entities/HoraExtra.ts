@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Funcionario } from "./Funcionario";
+import Colaborador from "./Colaborador";
 
 @Entity("hora-extra")
-export class HoraExtra {
+export default class HoraExtra {
   @PrimaryGeneratedColumn()
-  id: number;
+  idhoraextra: number;
 
   @Column({ type: "varchar" })
   entrada: string;
@@ -18,13 +18,18 @@ export class HoraExtra {
   @Column({ type: "varchar" })
   saida: string;
 
-  @Column({ type: "boolean" })
+  @Column({ type: "boolean", default: false })
   isApproved: boolean;
 
   @Column({ type: "varchar" })
   description: string;
 
-  @ManyToOne(() => Funcionario, (funcionario) => funcionario.id)
-  @JoinColumn({ name: "id" })
-  funcionario: Funcionario;
+  @ManyToOne(() => Colaborador, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn({
+    //Defines which side of the relation contains the join column with a foreign key
+    name: "idcolaborador",
+    referencedColumnName: "idcolaborador",
+    foreignKeyConstraintName: "fk_colaborador_id",
+  })
+  colaborador: Colaborador;
 }

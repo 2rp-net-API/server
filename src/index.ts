@@ -1,19 +1,16 @@
-import "express-async-errors";
-import express from "express";
-import { AppDataSource } from "./data-source";
-import { errorMiddleware } from "./middlewares/error";
-import routes from "./routes";
-var cors = require("cors");
+import * as express from "express";
+import * as cors from "cors";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-AppDataSource.initialize().then(() => {
-  const app = express();
+import routes from './routes';
 
-  app.use(express.json());
+const PORT = process.env.PORT || 3001;
 
-  app.use(cors());
+const app = express() 
+app.use(express.json()) 
+app.use(cors()) 
 
-  app.use(routes);
+app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
 
-  app.use(errorMiddleware);
-  return app.listen(process.env.PORT);
-});
+app.use(routes);
