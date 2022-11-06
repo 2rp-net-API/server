@@ -36,7 +36,7 @@ class ColaboradorController {
   }
 
   public async create(req: Request, res: Response): Promise<Response> {
-    let { nome, matricula, idturno, idgestor, perfil, senha } = req.body;
+    let { nome, matricula, idgestor, perfil, senha } = req.body;
 
     if (!nome || nome.trim().length == 0) {
       return res.json({ error: "Forneça o nome do colaborador" });
@@ -52,13 +52,6 @@ class ColaboradorController {
     object.matricula = matricula.trim();
     object.senha = senha.trim();
     object.perfil = !perfil ? "colaborador" : perfil;
-    if (idturno) {
-      const turno = await AppDataSource.manager.findOneBy(Turno, { idturno });
-      if (!turno || !turno.idturno) {
-        return res.json({ error: "Turno inválido" });
-      }
-      object.turno = turno;
-    }
     if (idgestor) {
       const gestor = await AppDataSource.manager.findOneBy(Colaborador, {
         idcolaborador: idgestor,
@@ -72,7 +65,7 @@ class ColaboradorController {
         });
       }
       object.gestor = gestor;
-      console.log(gestor)
+      console.log(gestor);
     }
     const response: any = await AppDataSource.manager
       .save(Colaborador, object)
@@ -83,9 +76,6 @@ class ColaboradorController {
         }
         return { error: e.message };
       });
-
-
-      
 
     return res.json(response);
   }
@@ -109,8 +99,7 @@ class ColaboradorController {
   }
 
   public async update(req: Request, res: Response): Promise<Response> {
-    const { idcolaborador, nome, matricula, idturno, idgestor, perfil } =
-      req.body;
+    const { idcolaborador, nome, matricula, idgestor, perfil } = req.body;
     if (!idcolaborador || idcolaborador.trim() === "") {
       return res.json({ error: "Forneça o identificador do colaborador" });
     }
@@ -125,13 +114,7 @@ class ColaboradorController {
           : matricula.trim();
       object.perfil =
         !perfil || perfil.trim() === "" ? object.perfil : perfil.trim();
-      if (idturno) {
-        const turno = await AppDataSource.manager.findOneBy(Turno, { idturno });
-        if (!turno || !turno.idturno) {
-          return res.json({ error: "Turno inválido" });
-        }
-        object.turno = turno;
-      }
+
       if (idgestor == idcolaborador) {
         return res.json({
           error: "O colaborador não pode ser gestor de si mesmo",

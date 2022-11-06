@@ -49,19 +49,6 @@ export default class Colaborador {
   })
   gestor: Colaborador;
 
-  @ManyToOne(() => Turno, {
-    onDelete: "NO ACTION",
-    onUpdate: "CASCADE",
-    nullable: true,
-  })
-  @JoinColumn({
-    //Defines which side of the relation contains the join column with a foreign key
-    name: "idturno",
-    referencedColumnName: "idturno",
-    foreignKeyConstraintName: "fk_turno_id",
-  })
-  turno: Turno;
-
   /* o relacionamento é bidirecional ao colocar ManyToMany e (colaborador)=> colaborador.projetos */
   @ManyToMany(() => Projeto, (projeto) => projeto.colaboradores)
   projetos: Projeto[];
