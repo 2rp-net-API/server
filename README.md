@@ -25,14 +25,7 @@ _for this project to work it is necessary to provide some key values in the .env
 | Parameter                | Type     | Description                                         |
 | :----------------------- | :------- | :-------------------------------------------------- |
 | `PORT`                   | `string` | **Required**. Port where the API will run           |
-| `TYPEORM_CONNECTTION`    | `string` | **Required**. database type                         |
-| `TYPEORM_HOST`           | `string` | **Required**. database host                         |
-| `TYPEORM_USERNAME`       | `string` | **Required**. database username                     |
-| `TYPEORM_PASSWORD`       | `string` | **Required**. database password                     |
-| `TYPEORM_DATABASE`       | `string` | **Required**. database name                         |
-| `TYPEORM_PORT`           | `string` | **Required**. database port                         |
-| `TYPEORM_MIGRATIONS`     | `string` | **Required**. src/database/migrations/\*.ts         |
-| `TYPEORM_MIGRATIONS_DIR` | `string` | **Required**. src/database/migrations               |
+| `BD_URL`    | `string` | **Required**. database URL                       |
 | `JWT_SECRET`             | `string` | **Required**. key to validate the jwt refresh token |
 
 ## Colaboradores Requests
