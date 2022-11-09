@@ -1,6 +1,6 @@
 import AppDataSource from "../data-source";
 import { Request, Response } from "express";
-import { Colaborador, Turno } from "../entities";
+import { Colaborador } from "../entities";
 import { Perfil } from "../entities";
 import { generateToken } from "../middlewares";
 

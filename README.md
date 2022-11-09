@@ -151,7 +151,38 @@ Responses
     "idhoraextra": idhoraextra,
     "idcolaborador": idcolaborador,
     "entrada": entrada, 
-    "saida": saida,  
+    "saida": saida,
+    "description": descriçao,
     "isApproved": false 
 }
 ```
+
+EDITAR HORA EXTRA
+```http
+PUT /horaextra/update
+```
+
+| Parameter   | Type      | Description                                                      | from |
+| :---------- | :-------- | :--------------------------------------------------------------- | :--- |
+| `entrada`   | `string`  | Dia e hora da entrada do colaborador                             | body |
+| `saida` | `string`  | Dia e hora da saida do colaborador                                   | body |
+| `description`    | `string`  | Descrição da Hora Extra a ser cadastrada                    | body |
+| `idcolaborador`     | `string`  | Identificador do colaborador                             | body |
+| `isApproved`     | `boolean`  | **Default: false** Aprovação da hora extra                 | body |
+| `idhoraextra`     | `string`  | Identificador hora extra                                   | body |
+| `token`  | `string` | Token JWT para autenticação                         | Authentication header |
+
+Responses
+
+- _400_ - `"All inputs are required"`
+- _201_ - Returned Hora Extra in object format :
+
+```javascript
+{ 
+    "idhoraextra": idhoraextra,
+    "idcolaborador": idcolaborador,
+    "entrada": entrada, 
+    "saida": saida,
+    "description": descrição,
+    "isApproved": false 
+}

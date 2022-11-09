@@ -10,7 +10,6 @@ import {
   ManyToMany,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
-import Turno from "./Turno";
 import Projeto from "./Projeto";
 import { Perfil, Status } from "./Types";
 

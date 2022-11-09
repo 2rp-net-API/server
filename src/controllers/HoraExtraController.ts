@@ -58,7 +58,7 @@ class HoraExtraController {
       entrada,
       saida,
       description,
-      colaborador,
+      idcolaborador,
       isApproved,
     } = req.body;
     if (!idhoraextra || idhoraextra.trim() === "") {
@@ -77,9 +77,9 @@ class HoraExtraController {
           ? object.description
           : description.trim();
       object.colaborador =
-        !colaborador || colaborador.trim() === ""
+        !idcolaborador || idcolaborador.trim() === ""
           ? object.colaborador
-          : colaborador.trim();
+          : idcolaborador.trim();
       object.isApproved =
         !isApproved || isApproved.trim() === ""
           ? object.isApproved

@@ -4,4 +4,4 @@ import projeto from "./ProjetoController";
 import horaextra from "./HoraExtraController";
 import sobreaviso from "./SobreavisoController";
 
-export { cliente, colaborador, projeto, turno, horaextra, sobreaviso };
+export { cliente, colaborador, projeto, horaextra, sobreaviso };
