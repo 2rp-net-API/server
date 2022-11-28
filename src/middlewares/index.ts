@@ -31,7 +31,7 @@ export const authorization = async (
         perfil: decoded.perfil,
         matricula: decoded.matricula,
       };
-      return res.json(decoded);
+      return next();
     }
   } catch (error) {
     // o toke não é válido, a resposta com HTTP Method 401 (unauthorized)

@@ -22,7 +22,7 @@ class HoraExtraController {
     object.entrada = entrada;
     object.saida = saida;
     object.description = description;
-    object.colaborador = idcolaborador;
+    object.colaborador = isColaborador;
     object.isApproved = false;
 
     const response: any = await AppDataSource.manager
@@ -30,7 +30,7 @@ class HoraExtraController {
       .catch((e) => {
         return e.message;
       });
-    return res.json('teste');
+    return res.json(response);
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {
@@ -96,6 +96,7 @@ class HoraExtraController {
 
   public async list(req: Request, res: Response): Promise<Response> {
     const object: any = await AppDataSource.getRepository(HoraExtra).find({});
+    console.log(object)
     return res.json(object);
   }
 
