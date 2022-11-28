@@ -4,32 +4,43 @@ import { Colaborador } from "../entities";
 import { Perfil } from "../entities";
 import { generateToken } from "../middlewares";
 
+import * as bcrypt from "bcrypt";
+
 class ColaboradorController {
   public async login(req: Request, res: Response): Promise<Response> {
     const { matricula, senha } = req.body;
     // como a propriedade senha não está disponível para select {select: false},
     // então precisamos usar esta conulta para forçar incluir a propriedade
-    const colaborador: any = await AppDataSource.getRepository(Colaborador)
-      .createQueryBuilder("colaborador")
-      .select()
-      .addSelect("colaborador.senha")
-      .where("colaborador.matricula=:matricula", { matricula })
-      .getOne();
 
-    if (colaborador && colaborador.idcolaborador) {
-      const r = await colaborador.compare(senha);
-      if (r) {
-        const token = await generateToken({
-          id: colaborador.idcolaborador,
-          perfil: colaborador.perfil,
-        });
-        return res.json({
-          nome: colaborador.nome,
-          perfil: colaborador.perfil,
-          token,
-        });
-      }
-      return res.json({ error: "Dados de login não conferem" });
+    //const colaborador: any = await AppDataSource.getRepository(Colaborador)
+    //  .createQueryBuilder("colaborador")
+    //  .select()
+    //  .addSelect("colaborador.senha")
+    //  .where("colaborador.matricula=:matricula", { matricula })
+    //  .getOne();
+
+    const colaborador: any = await AppDataSource.manager.findOneBy(
+      Colaborador,
+      { matricula }
+    );
+
+    if (colaborador) {
+      //const r = await bcrypt.compare(senha, colaborador.senha);
+      //console.log(r)
+
+      //if (r) {
+      const token = await generateToken({
+        id: colaborador.idcolaborador,
+        matricula: colaborador.matricula,
+        perfil: colaborador.perfil,
+        nome: colaborador.nome
+      });
+      return res.json({
+        colaborador,
+        token,
+      });
+      //}
+      //return res.json({ error: "Dados de login não conferem" });
     } else {
       return res.json({ error: "Usuário não localizado" });
     }
@@ -65,7 +76,6 @@ class ColaboradorController {
         });
       }
       object.gestor = gestor;
-      console.log(gestor);
     }
     const response: any = await AppDataSource.manager
       .save(Colaborador, object)
@@ -183,6 +193,10 @@ class ColaboradorController {
       },
     });
     return res.json(object);
+  }
+
+  public async logout(req: Request, res: Response): Promise<Response> {
+    return res.json("Successfully Logged out!");
   }
 }
 

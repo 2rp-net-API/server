@@ -14,6 +14,8 @@ routes.use("/projeto", authorization, projeto);
 routes.use("/horaextra", authorization, horaextra);
 routes.use("/sobreaviso", authorization, sobreaviso);
 routes.post("/login", colaboradorController.login);
+routes.post("/validate", authorization);
+routes.post("/logout");
 
 //aceita qualquer método HTTP ou URL
 //routes.use((req: Request, res: Response) => res.json({ error: "Requisição desconhecida" }));

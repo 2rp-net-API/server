@@ -4,7 +4,7 @@ import { HoraExtra } from "../entities";
 import { Colaborador } from "../entities";
 
 class HoraExtraController {
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async createhoraextra(req: Request, res: Response): Promise<Response> {
     let { entrada, saida, description, idcolaborador } = req.body;
 
     if (!entrada || entrada.trim() === "" || !saida || saida.trim() === "") {
@@ -14,7 +14,6 @@ class HoraExtraController {
     const isColaborador = await AppDataSource.manager.findOneBy(Colaborador, {
       idcolaborador,
     });
-
     if (!isColaborador || isColaborador.status === "inativo") {
       return res.json({ error: "Colaborador não localizado ou inativo" });
     }
@@ -26,12 +25,12 @@ class HoraExtraController {
     object.colaborador = idcolaborador;
     object.isApproved = false;
 
-    const horaextra: any = await AppDataSource.manager
+    const response: any = await AppDataSource.manager
       .save(HoraExtra, object)
       .catch((e) => {
         return e.message;
       });
-    return res.json(horaextra);
+    return res.json('teste');
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {

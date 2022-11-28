@@ -24,7 +24,7 @@ export default class Colaborador {
   @Column({ length: 50, nullable: false })
   nome: string;
 
-  @Column({ nullable: false, select: false })
+  @Column({ nullable: false, select: true })
   senha: string;
 
   @Column({
