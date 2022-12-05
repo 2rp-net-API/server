@@ -19,9 +19,9 @@ export const authorization = async (
     // autorização no formato "Bearer token"
     const token = authorization.replace("Bearer ", "");
     // valida o token
-    const decoded = <{ id: string; perfil: string; matricula: number }>(
-      jwt.verify(token, process.env.JWT_SECRET)
-    );
+    const decoded = <
+      { id: string; perfil: string; matricula: number; nome: string }
+    >jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded || !decoded.id) {
       res.status(401).send({ error: "Token de autorização incorreto" });
     } else {
@@ -30,13 +30,13 @@ export const authorization = async (
         id: decoded.id,
         perfil: decoded.perfil,
         matricula: decoded.matricula,
+        nome: decoded.nome,
       };
       return next();
     }
   } catch (error) {
     // o toke não é válido, a resposta com HTTP Method 401 (unauthorized)
-    res.status(401).send({ error: "Não autorizado" });
-    return;
+    return res.status(401).send({ error: "Não autorizado" });
   }
   return next();
 };
@@ -69,4 +69,32 @@ export const authGestor = async (
     return;
   }
   return next();
+};
+
+export const validate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authorization = req.headers.authorization;
+  try {
+    const token = authorization.replace("Bearer ", "");
+    const decoded = <
+      { id: string; perfil: string; matricula: number; nome: string }
+    >jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded || !decoded.id) {
+      res.status(401).send({ error: "Token de autorização incorreto" });
+    } else {
+      res.locals = {
+        id: decoded.id,
+        perfil: decoded.perfil,
+        matricula: decoded.matricula,
+        nome: decoded.nome,
+      };
+      return next();
+    }
+  } catch (error) {
+    return res.status(401).send({ error: "Não autorizado" });
+  }
+  next();
 };

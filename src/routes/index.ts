@@ -5,7 +5,7 @@ import projeto from "./projeto";
 import horaextra from "./horaextra";
 import sobreaviso from "./sobreaviso";
 import { colaborador as colaboradorController } from "../controllers";
-import { authorization } from "../middlewares";
+import { authorization, validate } from "../middlewares";
 const routes = Router();
 
 routes.use("/cliente", authorization, cliente);
@@ -14,8 +14,10 @@ routes.use("/projeto", authorization, projeto);
 routes.use("/horaextra", authorization, horaextra);
 routes.use("/sobreaviso", authorization, sobreaviso);
 routes.post("/login", colaboradorController.login);
-routes.post("/validate", authorization);
+routes.post("/validate", validate);
+routes.post("/validar", validate);
 routes.post("/logout");
+routes.post("/test");
 
 //aceita qualquer método HTTP ou URL
 //routes.use((req: Request, res: Response) => res.json({ error: "Requisição desconhecida" }));

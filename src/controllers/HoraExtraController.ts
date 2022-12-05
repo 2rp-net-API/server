@@ -95,8 +95,11 @@ class HoraExtraController {
   }
 
   public async list(req: Request, res: Response): Promise<Response> {
-    const object: any = await AppDataSource.getRepository(HoraExtra).find({});
-    console.log(object)
+    const object: any = await AppDataSource.getRepository(HoraExtra)
+      .createQueryBuilder("horaextra")
+      .leftJoinAndSelect("horaextra.colaborador", "idcolaborador")
+      .getMany();
+    console.log(object);
     return res.json(object);
   }
 
